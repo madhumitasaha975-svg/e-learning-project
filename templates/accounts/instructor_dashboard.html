@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Instructor Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-3 mb-4">
+      <div class="dashboard-sidebar p-4">
+
+        <h5 class="fw-bold mb-4">Instructor</h5>
+
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <a href="{% url 'instructor_dashboard' %}" class="dashboard-link active">📊 Overview</a>
+          </li>
+          <li class="mb-3">
+            <a href="{% url 'student_dashboard' %}" class="dashboard-link">🎓 Student View</a>
+          </li>
+          <li class="mb-3">
+            <a href="{% url 'course_list' %}" class="dashboard-link">📚 All Courses</a>
+          </li>
+          <li class="mb-3">
+            <a href="{% url 'profile' %}" class="dashboard-link">⚙️ Profile</a>
+          </li>
+          <li>
+            <a href="{% url 'create_course' %}" class="dashboard-link">➕ Add New Course</a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-lg-9">
+
+      <!-- Welcome -->
+      <div class="dashboard-card p-4 mb-4">
+        <h4 class="fw-bold">Welcome, {{ user.username }} 👨‍🏫</h4>
+        <p class="text-muted mb-0">Here's how your courses are performing.</p>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="row mb-4">
+
+        <div class="col-md-4 mb-3">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-primary">{{ total_courses }}</h3>
+            <p class="mb-0">Total Courses</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-success">{{ total_students }}</h3>
+            <p class="mb-0">Total Students</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-warning">{{ overall_avg_rating }}★</h3>
+            <p class="mb-0">Average Rating</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MY COURSES TABLE -->
+      <div class="dashboard-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">📚 My Courses</h5>
+          <a href="{% url 'create_course' %}" class="btn btn-primary btn-sm">
+            ➕ Add Course
+          </a>
+        </div>
+
+        {% if course_stats %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr style="font-size: 13px; color: #9ca3af; border-bottom: 2px solid #f0eeff;">
+                  <th>Course</th>
+                  <th class="text-center">Lessons</th>
+                  <th class="text-center">Students</th>
+                  <th class="text-center">Rating</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in course_stats %}
+                <tr>
+                  <td>
+                    <span class="fw-bold" style="font-size: 14.5px;">{{ stat.course.title }}</span>
+                    <br>
+                    <small class="text-muted">
+                      {% if stat.course.price == 0 %}
+                        <span class="badge bg-success">Free</span>
+                      {% else %}
+                        ₹{{ stat.course.price }}
+                      {% endif %}
+                    </small>
+                  </td>
+                  <td class="text-center">{{ stat.lesson_count }}</td>
+                  <td class="text-center">
+                    <span class="fw-bold text-primary">{{ stat.student_count }}</span>
+                  </td>
+                  <td class="text-center">
+                    {% if stat.rating_count > 0 %}
+                      <span style="color: #f59e0b;">★</span>
+                      {{ stat.avg_rating }}
+                      <small class="text-muted">({{ stat.rating_count }})</small>
+                    {% else %}
+                      <span class="text-muted small">No ratings</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <a href="{% url 'course_detail' stat.course.pk %}"
+                       class="btn btn-sm btn-outline-primary me-1">View</a>
+                    <a href="{% url 'manage_course' stat.course.pk %}"
+                       class="btn btn-sm btn-outline-secondary">Edit</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+        {% else %}
+          <div class="text-center py-5">
+            <p class="text-muted">You haven't created any courses yet.</p>
+            <a href="{% url 'create_course' %}" class="btn btn-primary">
+              ➕ Create Your First Course
+            </a>
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- RECENT ENROLLMENTS -->
+      {% if recent_enrollments %}
+      <div class="dashboard-card p-4">
+        <h5 class="fw-bold mb-4">🎓 Recent Enrollments</h5>
+
+        <ul class="list-group list-group-flush">
+          {% for enrollment in recent_enrollments %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <span class="fw-bold">{{ enrollment.student.username }}</span>
+              <span class="text-muted"> enrolled in </span>
+              <span class="fw-bold text-primary">{{ enrollment.course.title }}</span>
+            </div>
+            <small class="text-muted">{{ enrollment.enrolled_at|date:"M d, Y" }}</small>
+          </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

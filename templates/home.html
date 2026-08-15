@@ -1,0 +1,1082 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sapiora — Learn Without Limits{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<section class="lp-hero">
+
+  <!-- Floating grid lines -->
+  <div class="lp-grid" aria-hidden="true"></div>
+
+  <!-- Glow orbs -->
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+
+  <div class="lp-hero-inner">
+
+    <!-- Pill badge -->
+    <div class="lp-badge">
+      <span class="lp-badge-dot"></span>
+      Learn today. Lead tomorrow
+    </div>
+
+    <h1 class="lp-h1">
+      The smarter way<br>to <em>level&nbsp;up</em>
+    </h1>
+
+    <p class="lp-sub">
+      Expert-led courses. Real projects. Track every step.
+      Sapiora turns curiosity into expertise — at your pace.
+    </p>
+
+    <div class="lp-cta-row">
+      <a href="{% url 'course_list' %}" class="btn btn-primary lp-btn-main">
+        Browse Courses →
+      </a>
+      {% if not user.is_authenticated %}
+      <a href="{% url 'register' %}" class="btn btn-outline-secondary lp-btn-ghost">
+        Create free account
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- Social proof strip -->
+    <div class="lp-proof">
+      <div class="lp-avatars">
+        <span style="background:linear-gradient(135deg,#5b8dee,#8b5cf6)">A</span>
+        <span style="background:linear-gradient(135deg,#f97316,#ef4444)">M</span>
+        <span style="background:linear-gradient(135deg,#30d158,#06b6d4)">S</span>
+        <span style="background:linear-gradient(135deg,#f59e0b,#f97316)">R</span>
+      </div>
+      <span class="lp-proof-text">
+        Joined by <strong>{{ total_learners|default:0 }}+</strong> learners registered
+      </span>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════ -->
+<section class="lp-stats">
+  <div class="lp-stats-inner">
+
+    <div class="lp-stat">
+      <span class="lp-stat-num" data-target="{{ total_learners|default:0 }}">{{ total_learners|default:0 }}</span>
+      <span class="lp-stat-label">Students enrolled</span>
+    </div>
+
+    <div class="lp-stat-divider"></div>
+
+    <div class="lp-stat">
+      <span class="lp-stat-num" data-target="{{ total_courses|default:0 }}">{{ total_courses|default:0 }}</span>
+      <span class="lp-stat-label">Courses available</span>
+    </div>
+
+    <div class="lp-stat-divider"></div>
+
+    <div class="lp-stat">
+      <span class="lp-stat-num" data-target="{{ satisfaction|default:98 }}">{{ satisfaction|default:98 }}</span>
+      <span class="lp-stat-label">% satisfaction rate</span>
+    </div>
+
+    <div class="lp-stat-divider"></div>
+
+    <div class="lp-stat">
+      <span class="lp-stat-num" data-target="{{ total_instructors|default:0 }}">{{ total_instructors|default:0 }}</span>
+      <span class="lp-stat-label">Expert instructors</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════ -->
+<section class="lp-section reveal">
+
+  <div class="lp-section-header">
+    <p class="lp-eyebrow">Why Sapiora</p>
+    <h2 class="lp-h2">Everything you need<br>to learn faster</h2>
+  </div>
+
+  <div class="lp-features-grid">
+
+    <div class="lp-feature-card reveal-child">
+      <div class="lp-feature-icon" style="background:rgba(91,141,238,0.12);color:#8ab4f8;">📚</div>
+      <h3 class="lp-feature-title">Structured Curriculum</h3>
+      <p class="lp-feature-desc">Carefully designed lesson paths that take you from zero to job-ready, step by step.</p>
+    </div>
+
+    <div class="lp-feature-card reveal-child" style="animation-delay:0.1s;">
+      <div class="lp-feature-icon" style="background:rgba(48,209,88,0.12);color:#57e888;">📈</div>
+      <h3 class="lp-feature-title">Progress Tracking</h3>
+      <p class="lp-feature-desc">Visual progress bars and completion stats keep you motivated and on track every day.</p>
+    </div>
+
+    <div class="lp-feature-card reveal-child" style="animation-delay:0.2s;">
+      <div class="lp-feature-icon" style="background:rgba(249,115,22,0.12);color:#fb923c;">🏆</div>
+      <h3 class="lp-feature-title">Earn Certificates</h3>
+      <p class="lp-feature-desc">Complete courses and earn verified certificates you can share on your resume or LinkedIn.</p>
+    </div>
+
+    <div class="lp-feature-card reveal-child" style="animation-delay:0.3s;">
+      <div class="lp-feature-icon" style="background:rgba(139,92,246,0.12);color:#c4b5fd;">⚡</div>
+      <h3 class="lp-feature-title">Learn at Your Pace</h3>
+      <p class="lp-feature-desc">No deadlines, no pressure. Pick up exactly where you left off, anytime, anywhere.</p>
+    </div>
+
+    <div class="lp-feature-card reveal-child" style="animation-delay:0.4s;">
+      <div class="lp-feature-icon" style="background:rgba(6,182,212,0.12);color:#67e8f9;">👨‍🏫</div>
+      <h3 class="lp-feature-title">Expert Instructors</h3>
+      <p class="lp-feature-desc">Learn from industry professionals with real-world experience, not just textbook knowledge.</p>
+    </div>
+
+    <div class="lp-feature-card reveal-child" style="animation-delay:0.5s;">
+      <div class="lp-feature-icon" style="background:rgba(255,214,10,0.10);color:#fcd34d;">⭐</div>
+      <h3 class="lp-feature-title">Rated by Students</h3>
+      <p class="lp-feature-desc">Every course is reviewed by real students — so you always know what you're signing up for.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════ -->
+<section class="lp-section reveal">
+
+  <div class="lp-section-header">
+    <p class="lp-eyebrow">How it works</p>
+    <h2 class="lp-h2">Start learning in<br>three simple steps</h2>
+  </div>
+
+  <div class="lp-steps">
+
+    <div class="lp-step reveal-child">
+      <div class="lp-step-num">01</div>
+      <div class="lp-step-line"></div>
+      <div class="lp-step-body">
+        <h3 class="lp-step-title">Create your account</h3>
+        <p class="lp-step-desc">Sign up for free in under 30 seconds. No credit card required.</p>
+      </div>
+    </div>
+
+    <div class="lp-step reveal-child" style="animation-delay:0.15s;">
+      <div class="lp-step-num">02</div>
+      <div class="lp-step-line"></div>
+      <div class="lp-step-body">
+        <h3 class="lp-step-title">Pick a course</h3>
+        <p class="lp-step-desc">Browse hundreds of expert-led courses across tech, design, business and more.</p>
+      </div>
+    </div>
+
+    <div class="lp-step reveal-child" style="animation-delay:0.3s;">
+      <div class="lp-step-num">03</div>
+      <div class="lp-step-line lp-step-line--hidden"></div>
+      <div class="lp-step-body">
+        <h3 class="lp-step-title">Learn and grow</h3>
+        <p class="lp-step-desc">Complete lessons, track progress, earn your certificate and share it with the world.</p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     POPULAR COURSES
+═══════════════════════════════════════════ -->
+<section class="lp-section reveal">
+
+  <div class="lp-section-header lp-section-header--row">
+    <div>
+      <p class="lp-eyebrow">Popular courses</p>
+      <h2 class="lp-h2" style="margin-bottom:0;">Trending right now</h2>
+    </div>
+    <a href="{% url 'course_list' %}" class="btn btn-outline-secondary">
+      View all courses →
+    </a>
+  </div>
+
+  {% if courses %}
+  <div class="lp-courses-grid">
+    {% for course in courses|slice:":3" %}
+    <div class="lp-course-card reveal-child" style="animation-delay:{{ forloop.counter0 }}00ms;">
+
+      <!-- Color accent top bar -->
+      <div class="lp-course-bar" style="
+        background: {% if forloop.counter == 1 %}linear-gradient(90deg,#5b8dee,#8b5cf6)
+                    {% elif forloop.counter == 2 %}linear-gradient(90deg,#30d158,#06b6d4)
+                    {% else %}linear-gradient(90deg,#f97316,#f59e0b){% endif %};
+      "></div>
+
+      <div class="lp-course-body">
+
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="lp-course-badge">
+            {% if course.price == 0 %}Free{% else %}₹{{ course.price }}{% endif %}
+          </span>
+          <div>
+            {% for i in "12345" %}
+              {% if forloop.counter <= course.rating %}
+                <span style="color:#fcd34d;font-size:12px;">★</span>
+              {% else %}
+                <span style="color:rgba(255,255,255,0.15);font-size:12px;">★</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <h3 class="lp-course-title">
+          <a href="{% url 'course_detail' course.pk %}">{{ course.title }}</a>
+        </h3>
+
+        <p class="lp-course-desc">{{ course.description|truncatewords:16 }}</p>
+
+        <div class="lp-course-footer">
+          <span class="lp-course-instructor">by {{ course.instructor.username }}</span>
+          <a href="{% url 'course_detail' course.pk %}" class="btn btn-primary btn-sm">
+            Start learning →
+          </a>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="lp-empty">
+    <p>No courses yet — check back soon!</p>
+    <a href="{% url 'course_list' %}" class="btn btn-outline-secondary">Browse courses</a>
+  </div>
+  {% endif %}
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════ -->
+<section class="lp-section reveal">
+
+  <div class="lp-section-header">
+    <p class="lp-eyebrow">Testimonials</p>
+    <h2 class="lp-h2">Loved by learners<br>worldwide</h2>
+  </div>
+
+  <div class="lp-testimonials">
+
+    <div class="lp-testimonial reveal-child">
+      <div class="lp-t-stars">★★★★★</div>
+      <p class="lp-t-quote">"Sapiora completely changed how I approach learning. The course structure is so clean and the progress tracking keeps me going every single day."</p>
+      <div class="lp-t-author">
+        <div class="lp-t-avatar" style="background:linear-gradient(135deg,#5b8dee,#8b5cf6)">A</div>
+        <div>
+          <div class="lp-t-name">Aryan Mehta</div>
+          <div class="lp-t-role">Python Developer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lp-testimonial reveal-child" style="animation-delay:0.12s;">
+      <div class="lp-t-stars">★★★★★</div>
+      <p class="lp-t-quote">"I landed my first freelance project after completing the Web Development course. The lessons are practical, not just theory. Worth every minute."</p>
+      <div class="lp-t-author">
+        <div class="lp-t-avatar" style="background:linear-gradient(135deg,#30d158,#06b6d4)">S</div>
+        <div>
+          <div class="lp-t-name">Sneha Rao</div>
+          <div class="lp-t-role">Freelance Developer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lp-testimonial reveal-child" style="animation-delay:0.24s;">
+      <div class="lp-t-stars">★★★★★</div>
+      <p class="lp-t-quote">"The dark UI alone makes me want to open the app every day. But more importantly — the content quality is seriously impressive. 10/10."</p>
+      <div class="lp-t-author">
+        <div class="lp-t-avatar" style="background:linear-gradient(135deg,#f97316,#f59e0b)">R</div>
+        <div>
+          <div class="lp-t-name">Rahul Sharma</div>
+          <div class="lp-t-role">UI/UX Designer</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CTA BANNER
+═══════════════════════════════════════════ -->
+<section class="lp-cta-section reveal">
+
+  <div class="lp-cta-glow" aria-hidden="true"></div>
+
+  <p class="lp-eyebrow" style="color:rgba(255,255,255,0.5);">Ready to start?</p>
+  <h2 class="lp-h2 lp-cta-h2">
+    Your next skill is<br>one click away
+  </h2>
+  <p class="lp-cta-sub">
+    Join thousands of learners already building their future on Sapiora.
+    Free to start. No credit card needed.
+  </p>
+
+  <div class="lp-cta-row">
+    {% if user.is_authenticated %}
+      <a href="{% url 'course_list' %}" class="btn btn-primary lp-btn-main">
+        Continue Learning →
+      </a>
+    {% else %}
+      <a href="{% url 'register' %}" class="btn btn-primary lp-btn-main">
+        Start for free →
+      </a>
+      <a href="{% url 'course_list' %}" class="btn btn-outline-secondary lp-btn-ghost">
+        Browse courses
+      </a>
+    {% endif %}
+  </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+/* ═══════════════════════════════════════════
+   LANDING PAGE — PREMIUM DARK
+═══════════════════════════════════════════ */
+
+/* ── SHARED ── */
+.lp-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #5b8dee;
+  margin-bottom: 14px;
+  opacity: 0.8;
+}
+
+.lp-h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 0;
+}
+
+.lp-section {
+  padding: 110px 0;
+  position: relative;
+}
+
+.lp-section-header { text-align: center; margin-bottom: 64px; }
+
+.lp-section-header--row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  text-align: left;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* ── HERO ── */
+.lp-hero {
+  position: relative;
+  padding: 120px 0 100px;
+  text-align: center;
+  overflow: hidden;
+  /* Dark background so it always looks right */
+  background: radial-gradient(ellipse 100% 80% at 50% 0%,
+    rgba(91,141,238,0.13) 0%,
+    rgba(139,92,246,0.06) 40%,
+    transparent 70%);
+  border-radius: 24px;
+  margin-bottom: 0;
+}
+
+/* Animated grid */
+.lp-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  border-radius: inherit;
+  mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 30%, transparent 80%);
+  animation: gridFloat 20s ease-in-out infinite;
+}
+
+@keyframes gridFloat {
+  0%, 100% { background-position: 0 0, 0 0; }
+  50%       { background-position: 30px 20px, 30px 20px; }
+}
+
+/* Glow orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.orb-1 {
+  width: 700px; height: 500px;
+  background: radial-gradient(circle, rgba(91,141,238,0.22), transparent 65%);
+  top: -160px; left: 50%;
+  transform: translateX(-50%);
+  animation: orbFloat1 10s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(139,92,246,0.16), transparent 65%);
+  bottom: -60px; right: 5%;
+  animation: orbFloat2 14s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(6,182,212,0.1), transparent 65%);
+  bottom: 20px; left: 5%;
+  animation: orbFloat2 18s ease-in-out infinite reverse;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+  50%       { transform: translateX(-48%) translateY(-30px) scale(1.05); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-20px) scale(1.08); }
+}
+
+/* Hero inner */
+.lp-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* Badge */
+.lp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(91,141,238,0.1);
+  border: 1px solid rgba(91,141,238,0.3);
+  border-radius: 100px;
+  padding: 6px 18px;
+  font-size: 12.5px;
+  color: #8ab4f8;
+  font-weight: 500;
+  margin-bottom: 36px;
+  letter-spacing: 0.2px;
+  animation: badgeFadeIn 0.8s ease 0.2s both;
+  box-shadow: 0 0 20px rgba(91,141,238,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+@keyframes badgeFadeIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.lp-badge-dot {
+  width: 6px; height: 6px;
+  background: #5b8dee;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #5b8dee, 0 0 20px rgba(91,141,238,0.5);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #5b8dee; }
+  50%       { opacity: 0.7; transform: scale(1.5); box-shadow: 0 0 20px #5b8dee, 0 0 40px rgba(91,141,238,0.4); }
+}
+
+/* Hero heading */
+.lp-h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 74px;
+  font-weight: 800;
+  letter-spacing: -3.5px;
+  line-height: 1.0;
+  color: #fff;
+  margin-bottom: 24px;
+  animation: heroHeadIn 0.9s cubic-bezier(0.2,0,0,1) 0.4s both;
+}
+
+@keyframes heroHeadIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.lp-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, #c4b5fd 0%, #8ab4f8 50%, #67e8f9 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* Subheading */
+.lp-sub {
+  font-size: 18px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.48);
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto 44px;
+  letter-spacing: -0.1px;
+  animation: heroSubIn 0.9s ease 0.6s both;
+}
+
+@keyframes heroSubIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* CTA row */
+.lp-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: heroSubIn 0.9s ease 0.8s both;
+}
+
+.lp-btn-main { font-size: 15px !important; padding: 13px 32px !important; }
+.lp-btn-ghost { font-size: 14.5px !important; padding: 12px 28px !important; }
+
+/* Social proof */
+.lp-proof {
+  margin-top: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  animation: heroSubIn 0.9s ease 1s both;
+}
+
+.lp-avatars { display: flex; }
+
+.lp-avatars span {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  margin-left: -9px;
+  border: 2px solid rgba(0,0,0,0.3);
+  font-family: 'Bricolage Grotesque', sans-serif;
+  box-shadow: 0 0 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
+}
+
+.lp-avatars span:first-child { margin-left: 0; }
+.lp-avatars span:hover { transform: translateY(-3px) scale(1.15); z-index: 10; }
+
+.lp-proof-text {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 300;
+}
+
+.lp-proof-text strong { color: rgba(255,255,255,0.65); font-weight: 600; }
+
+/* ── STATS ── */
+.lp-stats { padding: 0 0 90px; }
+
+.lp-stats-inner {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.lp-stats-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(91,141,238,0.5), rgba(139,92,246,0.4), transparent);
+}
+
+.lp-stat { text-align: center; flex: 1; min-width: 120px; }
+
+.lp-stat-num {
+  display: block;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 8px;
+  text-shadow: 0 0 40px rgba(91,141,238,0.3);
+}
+
+.lp-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.lp-stat-divider {
+  width: 1px; height: 52px;
+  background: rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+/* ── FEATURES GRID ── */
+.lp-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.lp-feature-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 32px;
+  transition: all 0.35s cubic-bezier(0.2,0,0,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.lp-feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(91,141,238,0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.lp-feature-card:hover::before { opacity: 1; }
+
+.lp-feature-card:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(91,141,238,0.25);
+  transform: translateY(-8px);
+  box-shadow: 0 0 0 1px rgba(91,141,238,0.1), 0 20px 48px rgba(0,0,0,0.4), 0 0 60px rgba(91,141,238,0.06);
+}
+
+.lp-feature-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.lp-feature-card:hover .lp-feature-icon { transform: scale(1.1) rotate(-5deg); }
+
+.lp-feature-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+
+.lp-feature-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.72;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ── HOW IT WORKS ── */
+.lp-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.lp-step { padding: 0 40px; position: relative; }
+
+.lp-step-num {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -4px;
+  background: linear-gradient(135deg, rgba(91,141,238,0.7), rgba(139,92,246,0.3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.lp-step-line {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, rgba(91,141,238,0.5), rgba(139,92,246,0.2), transparent);
+  margin-bottom: 28px;
+}
+
+.lp-step-line--hidden { background: transparent; }
+
+.lp-step-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+
+.lp-step-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.72;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ── COURSES GRID ── */
+.lp-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.lp-course-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.2,0,0,1);
+  position: relative;
+}
+
+.lp-course-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 80%; height: 100%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+  transition: left 0.7s ease;
+}
+
+.lp-course-card:hover::after { left: 140%; }
+
+.lp-course-card:hover {
+  border-color: rgba(91,141,238,0.25);
+  transform: translateY(-8px);
+  box-shadow: 0 0 0 1px rgba(91,141,238,0.12), 0 24px 56px rgba(0,0,0,0.45), 0 0 80px rgba(91,141,238,0.07);
+}
+
+.lp-course-bar { height: 3px; width: 100%; }
+
+.lp-course-body { padding: 26px; }
+
+.lp-course-badge {
+  display: inline-block;
+  background: rgba(91,141,238,0.12);
+  color: #8ab4f8;
+  border: 1px solid rgba(91,141,238,0.22);
+  border-radius: 100px;
+  padding: 3px 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.lp-course-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin: 14px 0 10px;
+  line-height: 1.3;
+}
+
+.lp-course-title a { color: #fff; text-decoration: none; transition: color 0.2s; }
+.lp-course-title a:hover { color: #8ab4f8; }
+
+.lp-course-desc {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.32);
+  line-height: 1.68;
+  font-weight: 300;
+  margin-bottom: 22px;
+}
+
+.lp-course-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.lp-course-instructor { font-size: 12.5px; color: rgba(255,255,255,0.28); }
+
+/* ── TESTIMONIALS ── */
+.lp-testimonials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.lp-testimonial {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 32px;
+  transition: all 0.35s cubic-bezier(0.2,0,0,1);
+  position: relative;
+  overflow: hidden;
+}
+
+.lp-testimonial::before {
+  content: '"\2019';
+  position: absolute;
+  top: -10px; right: 24px;
+  font-size: 100px;
+  font-family: Georgia, serif;
+  color: rgba(91,141,238,0.08);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.lp-testimonial:hover {
+  border-color: rgba(91,141,238,0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 0 0 1px rgba(91,141,238,0.08), 0 16px 48px rgba(0,0,0,0.35);
+}
+
+.lp-t-stars {
+  color: #fbbf24;
+  font-size: 13px;
+  letter-spacing: 3px;
+  margin-bottom: 18px;
+}
+
+.lp-t-quote {
+  font-size: 14.5px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.78;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.lp-t-author { display: flex; align-items: center; gap: 12px; }
+
+.lp-t-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 14px; font-weight: 700; color: white;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(0,0,0,0.3);
+}
+
+.lp-t-name { font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.82); }
+.lp-t-role { font-size: 12px; color: rgba(255,255,255,0.28); font-weight: 300; }
+
+/* ── CTA SECTION ── */
+.lp-cta-section {
+  position: relative;
+  text-align: center;
+  padding: 100px 40px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 28px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.lp-cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(91,141,238,0.6), rgba(139,92,246,0.5), transparent);
+}
+
+.lp-cta-glow {
+  position: absolute;
+  top: -120px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 350px;
+  background: radial-gradient(ellipse, rgba(91,141,238,0.12) 0%, transparent 65%);
+  pointer-events: none;
+  animation: ctaGlow 6s ease-in-out infinite;
+}
+
+@keyframes ctaGlow {
+  0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+.lp-cta-h2 { font-size: 52px !important; letter-spacing: -2px !important; margin: 0 auto 20px !important; max-width: 600px; }
+.lp-cta-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.38);
+  font-weight: 300;
+  max-width: 440px;
+  margin: 0 auto 44px;
+  line-height: 1.75;
+}
+
+.lp-empty { text-align: center; padding: 60px; color: rgba(255,255,255,0.25); }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.75s cubic-bezier(0.2,0,0,1),
+              transform 0.75s cubic-bezier(0.2,0,0,1);
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.reveal-child {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s cubic-bezier(0.2,0,0,1),
+              transform 0.65s cubic-bezier(0.2,0,0,1);
+}
+
+.reveal-child.visible { opacity: 1; transform: translateY(0); }
+
+/* ── LIGHT MODE OVERRIDES FOR LANDING ── */
+body.light-mode .lp-h1 { color: #0a0a0a; }
+body.light-mode .lp-h2 { color: #0a0a0a; }
+body.light-mode .lp-sub { color: rgba(0,0,0,0.5); }
+body.light-mode .lp-badge { background: rgba(91,141,238,0.08); border-color: rgba(91,141,238,0.2); }
+body.light-mode .lp-feature-card,
+body.light-mode .lp-course-card,
+body.light-mode .lp-testimonial,
+body.light-mode .lp-cta-section,
+body.light-mode .lp-stats-inner { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
+body.light-mode .lp-feature-title,
+body.light-mode .lp-step-title,
+body.light-mode .lp-course-title a,
+body.light-mode .lp-stat-num { color: #0a0a0a; }
+body.light-mode .lp-feature-desc,
+body.light-mode .lp-step-desc,
+body.light-mode .lp-course-desc,
+body.light-mode .lp-t-quote,
+body.light-mode .lp-cta-sub { color: rgba(0,0,0,0.45); }
+body.light-mode .lp-t-name { color: rgba(0,0,0,0.8); }
+body.light-mode .lp-proof-text { color: rgba(0,0,0,0.4); }
+body.light-mode .lp-proof-text strong { color: rgba(0,0,0,0.7); }
+body.light-mode .lp-stat-label { color: rgba(0,0,0,0.35); }
+body.light-mode .lp-grid {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 992px) {
+  .lp-h1 { font-size: 48px; letter-spacing: -2px; }
+  .lp-h2 { font-size: 34px; letter-spacing: -1px; }
+  .lp-features-grid, .lp-steps,
+  .lp-courses-grid, .lp-testimonials { grid-template-columns: 1fr 1fr; }
+  .lp-stats-inner { padding: 32px; }
+  .lp-stat-divider { display: none; }
+}
+
+@media (max-width: 600px) {
+  .lp-h1 { font-size: 36px; letter-spacing: -1.5px; }
+  .lp-h2 { font-size: 26px; }
+  .lp-features-grid, .lp-steps,
+  .lp-courses-grid, .lp-testimonials { grid-template-columns: 1fr; }
+  .lp-cta-h2 { font-size: 32px !important; }
+  .lp-section { padding: 64px 0; }
+  .lp-hero { padding: 80px 0 60px; }
+  .lp-section-header--row { flex-direction: column; align-items: flex-start; }
+}
+
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+
+  /* ── Intersection observer for reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+
+        // trigger children with staggered delay
+        entry.target.querySelectorAll('.reveal-child').forEach((child, i) => {
+          setTimeout(() => child.classList.add('visible'), i * 110);
+        });
+
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Counting animation for stats ── */
+  // Stat counter animation
+  document.querySelectorAll('.lp-stat-num').forEach(el => {
+    const target = parseInt(el.dataset.target, 10);
+    if (!target || isNaN(target)) return; // leave as-is if no target
+    const duration = 1600;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      el.textContent = Math.floor(ease * target).toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+      else el.textContent = target.toLocaleString();
+    }
+    requestAnimationFrame(update);
+  });
+
+})();
+</script>
+{% endblock %}

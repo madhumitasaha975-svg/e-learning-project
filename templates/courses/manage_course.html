@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Manage — {{ course.title }}{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-3 mb-4">
+      <div class="dashboard-sidebar p-4">
+        <h5 class="fw-bold mb-4">Instructor</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3"><a href="{% url 'instructor_dashboard' %}" class="dashboard-link">📊 Dashboard</a></li>
+          <li class="mb-3"><a href="{% url 'create_course' %}" class="dashboard-link">➕ New Course</a></li>
+          <li class="mb-3"><a href="{% url 'course_detail' course.pk %}" class="dashboard-link">👁 View Course</a></li>
+          <li>
+            <a href="{% url 'delete_course' course.pk %}"
+               class="dashboard-link text-danger">🗑 Delete Course</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-lg-9">
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-success mb-3">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- EDIT COURSE -->
+      <div class="dashboard-card p-4 mb-4">
+        <h5 class="fw-bold mb-4">✏️ Edit Course Details</h5>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Course Title</label>
+            {{ course_form.title }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Description</label>
+            {{ course_form.description }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Price (₹)</label>
+            {{ course_form.price }}
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Course Thumbnail</label>
+            {% if course.thumbnail %}
+              <div style="position:relative;margin-bottom:10px;">
+                <img src="{{ course.thumbnail.url }}" alt="Thumbnail"
+                     style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--border);">
+                <span style="position:absolute;top:8px;left:10px;background:rgba(0,0,0,0.6);color:white;font-size:11px;padding:3px 8px;border-radius:20px;">Current</span>
+              </div>
+            {% endif %}
+            {{ course_form.thumbnail }}
+            <div style="font-size:12px;color:var(--text3);margin-top:6px;">Upload new image to replace thumbnail.</div>
+          </div>
+
+          <button type="submit" name="update_course" class="btn btn-primary">
+            Save Changes
+          </button>
+
+        </form>
+      </div>
+
+      <!-- LESSONS LIST -->
+      <div class="dashboard-card p-4 mb-4">
+        <h5 class="fw-bold mb-4">📚 Lessons ({{ lessons.count }})</h5>
+
+        {% if lessons %}
+          <ul class="list-group list-group-flush mb-3">
+            {% for lesson in lessons %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span>
+                <strong>{{ lesson.order }}.</strong> {{ lesson.title }}
+              </span>
+              <form method="POST" action="{% url 'delete_lesson' course.pk lesson.pk %}"
+                    onsubmit="return confirm('Delete this lesson?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">🗑 Delete</button>
+              </form>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">No lessons yet. Add your first lesson below.</p>
+        {% endif %}
+
+      </div>
+
+      <!-- ADD LESSON -->
+      <div class="dashboard-card p-4">
+        <h5 class="fw-bold mb-4">➕ Add New Lesson</h5>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Lesson Title</label>
+            {{ lesson_form.title }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Content</label>
+            {{ lesson_form.content }}
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Order</label>
+            {{ lesson_form.order }}
+            <small class="text-muted d-block">Controls the sequence (1 = first lesson)</small>
+          </div>
+
+          <button type="submit" name="add_lesson" class="btn btn-success">
+            ➕ Add Lesson
+          </button>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

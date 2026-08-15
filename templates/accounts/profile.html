@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-3 mb-4">
+      <div class="dashboard-sidebar p-4">
+        <h5 class="fw-bold mb-4">Dashboard</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3"><a href="{% url 'student_dashboard' %}" class="dashboard-link">📊 Overview</a></li>
+          <li class="mb-3"><a href="{% url 'course_list' %}" class="dashboard-link">📚 My Courses</a></li>
+          <li class="mb-3"><a href="#" class="dashboard-link">❤️ Wishlist</a></li>
+          <li class="mb-3"><a href="#" class="dashboard-link">🔔 Notifications</a></li>
+          <li><a href="{% url 'profile' %}" class="dashboard-link active">⚙ Settings</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-lg-9">
+
+      <!-- Profile Header Card -->
+      <div class="dashboard-card p-4 mb-4 d-flex align-items-center gap-4">
+
+        <!-- Avatar -->
+        <div class="profile-avatar">
+          <div style="width:80px; height:80px; border-radius:50%; background:#4f46e5;
+                      display:flex; align-items:center; justify-content:center;">
+            <span style="color:white; font-size:2rem; font-weight:bold;">
+              {{ user.username|first|upper }}
+            </span>
+          </div>
+        </div>
+
+        <!-- User Info -->
+        <div>
+          <h4 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h4>
+          <p class="text-muted mb-1">@{{ user.username }}</p>
+          <small class="text-muted">Member since {{ user.date_joined|date:"F Y" }}</small>
+        </div>
+
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="row mb-4">
+
+        <div class="col-md-6 mb-3">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-primary">{{ enrolled_count }}</h3>
+            <p class="mb-0">Enrolled Courses</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-success">{{ average_progress }}%</h3>
+            <p class="mb-0">Average Progress</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- EDIT PROFILE FORM -->
+      <div class="dashboard-card p-4 mb-4">
+        <h5 class="fw-bold mb-4">✏️ Edit Profile</h5>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">First Name</label>
+            {{ form.first_name }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Last Name</label>
+            {{ form.last_name }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Email Address</label>
+            {{ form.email }}
+          </div>
+
+          <div class="d-flex gap-3 align-items-center">
+            <button type="submit" class="btn btn-primary">
+              Save Changes
+            </button>
+            <a href="{% url 'password_change' %}" class="btn btn-outline-secondary">
+              🔒 Change Password
+            </a>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- COURSE PROGRESS SUMMARY -->
+      {% if progress_data %}
+      <div class="dashboard-card p-4">
+        <h5 class="fw-bold mb-4">📈 My Course Progress</h5>
+
+        {% for p in progress_data %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-bold">{{ p.course.title }}</span>
+            <span class="text-muted">{{ p.progress }}%</span>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div class="progress-bar bg-primary"
+                 role="progressbar"
+                 style="width: {{ p.progress }}%;"
+                 aria-valuenow="{{ p.progress }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

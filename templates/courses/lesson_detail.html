@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }}{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-3 mb-4">
+      <div class="dashboard-sidebar p-3">
+
+        <h6 class="fw-bold mb-1">{{ course.title }}</h6>
+        <small class="text-muted d-block mb-3">{{ course.lessons.count }} lessons</small>
+
+        <ul class="list-unstyled">
+          {% for l in all_lessons %}
+          <li class="mb-2">
+            <a href="{% url 'lesson_detail' course.pk l.pk %}"
+               class="dashboard-link {% if l.pk == lesson.pk %}fw-bold text-primary{% endif %}">
+
+              {% if l.pk in completed_lesson_ids %}
+                ✅
+              {% else %}
+                ⬜
+              {% endif %}
+
+              {{ l.order }}. {{ l.title }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- LESSON CONTENT -->
+    <div class="col-lg-9">
+
+      <div class="dashboard-card p-4 mb-4">
+
+        <!-- Breadcrumb -->
+        <nav class="mb-3">
+          <small>
+            <a href="{% url 'course_list' %}">Courses</a> /
+            <a href="{% url 'course_detail' course.pk %}">{{ course.title }}</a> /
+            {{ lesson.title }}
+          </small>
+        </nav>
+
+        <!-- Lesson Title -->
+        <h3 class="fw-bold mb-4">{{ lesson.title }}</h3>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+          {{ lesson.content|linebreaks }}
+        </div>
+
+        <hr class="mt-4">
+
+        <!-- MARK COMPLETE BUTTON -->
+        {% if lesson_progress.completed %}
+          <div class="alert alert-success mt-3">
+            ✅ You have completed this lesson!
+          </div>
+        {% else %}
+          <form method="POST" action="{% url 'mark_lesson_complete' course.pk lesson.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success mt-3">
+              ✅ Mark as Complete
+            </button>
+          </form>
+        {% endif %}
+
+      </div>
+
+      <!-- PREV / NEXT NAVIGATION -->
+      <div class="d-flex justify-content-between">
+
+        {% if prev_lesson %}
+          <a href="{% url 'lesson_detail' course.pk prev_lesson.pk %}"
+             class="btn btn-outline-secondary">
+            ← Previous: {{ prev_lesson.title }}
+          </a>
+        {% else %}
+          <span></span>
+        {% endif %}
+
+        {% if next_lesson %}
+          <a href="{% url 'lesson_detail' course.pk next_lesson.pk %}"
+             class="btn btn-primary">
+            Next: {{ next_lesson.title }} →
+          </a>
+        {% else %}
+          <a href="{% url 'course_detail' course.pk %}"
+             class="btn btn-success">
+            🎉 Back to Course
+          </a>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

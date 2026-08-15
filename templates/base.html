@@ -1,0 +1,346 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sapiora{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bricolage Grotesque + DM Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Cormorant+Garamond:ital,wght@0,600;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <!-- Prevent flash: apply theme before render -->
+    <script>
+        if (localStorage.getItem("theme") === "light") {
+            document.documentElement.classList.add("light-mode-pending");
+        }
+    </script>
+    <style>
+        html.light-mode-pending body { background-color: #f0f0f5 !important; }
+    </style>
+
+    <style>
+/* ============================================
+   CURSOR TRAILING BLOB
+============================================ */
+#cursorBlob {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  top: 0; left: 0;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    rgba(91,141,238,0.25) 0%,
+    rgba(139,92,246,0.10) 40%,
+    transparent 70%);
+  filter: blur(60px);
+  will-change: left, top, background;
+  opacity: 1;
+}
+</style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="main-body">
+
+
+<!-- Cursor trailing glow -->
+<div id="cursorBlob"></div>
+
+<nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container">
+
+        <a class="navbar-brand brand-text" href="{% url 'home' %}" style="text-decoration:none;">
+            <span class="sapiora-logo">Sapiora</span>
+        </a>
+
+        <button class="navbar-toggler border-0" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span style="display:block;width:20px;height:1.5px;background:rgba(255,255,255,0.5);margin:4px 0;border-radius:2px;"></span>
+            <span style="display:block;width:14px;height:1.5px;background:rgba(255,255,255,0.5);margin:4px 0;border-radius:2px;"></span>
+            <span style="display:block;width:20px;height:1.5px;background:rgba(255,255,255,0.5);margin:4px 0;border-radius:2px;"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center gap-1">
+
+                <li class="nav-item">
+                    <a class="nav-link custom-link" href="{% url 'course_list' %}">Courses</a>
+                </li>
+
+                <!-- Wishlist -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link custom-link dropdown-toggle"
+                       href="#" data-bs-toggle="dropdown">
+                        ❤️&nbsp;Wishlist
+                        <span id="wishlistCount" class="badge bg-danger ms-1" style="font-size:10px;">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width:260px;" id="wishlistItems">
+                        <li class="text-center py-3" style="font-size:13px; color: var(--text3);">No items yet</li>
+                    </ul>
+                </li>
+
+                <!-- Theme toggle -->
+                <li class="nav-item">
+                    <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+                </li>
+
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="{% url 'student_dashboard' %}">Dashboard</a>
+                    </li>
+
+                    <!-- User dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link custom-link dropdown-toggle d-flex align-items-center gap-2"
+                           href="#" data-bs-toggle="dropdown">
+                            <span style="
+                                background: linear-gradient(135deg, #5b8dee, #8b5cf6);
+                                color: white;
+                                border-radius: 50%;
+                                width: 26px; height: 26px;
+                                display: inline-flex;
+                                align-items: center; justify-content: center;
+                                font-size: 11px; font-weight: 700;
+                                flex-shrink: 0;
+                                font-family: 'Bricolage Grotesque', sans-serif;
+                            ">{{ user.username|first|upper }}</span>
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">⚙️&nbsp; My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'student_dashboard' %}">📊&nbsp; Dashboard</a></li>
+                            {% if user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'instructor_dashboard' %}">👨‍🏫&nbsp; Instructor</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        🚪&nbsp; Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link custom-link" href="{% url 'login' %}">Sign in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link custom-link register-btn" href="{% url 'register' %}">
+                            Get started →
+                        </a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container py-5 content-wrapper">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Footer -->
+<footer class="text-center custom-footer">
+   Great things take two - Madhumita x Sahina © Sapiora 2026
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ── Apply saved theme immediately ── */
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    const btn = document.getElementById("themeToggle");
+
+    function applyTheme(mode) {
+        if (mode === "light") {
+            document.body.classList.add("light-mode");
+            document.documentElement.classList.remove("light-mode-pending");
+            if (btn) btn.textContent = "☀️";
+        } else {
+            document.body.classList.remove("light-mode");
+            if (btn) btn.textContent = "🌙";
+        }
+        localStorage.setItem("theme", mode);
+    }
+
+    applyTheme(savedTheme);
+
+    if (btn) {
+        btn.addEventListener("click", () => {
+            const current = document.body.classList.contains("light-mode");
+            applyTheme(current ? "dark" : "light");
+        });
+    }
+
+    /* ── Navbar scroll glow ── */
+    window.addEventListener('scroll', () => {
+        document.querySelector('.custom-navbar')
+            ?.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    /* ── Wishlist ── */
+    const wishlistCount = document.getElementById("wishlistCount");
+    const wishlistItems = document.getElementById("wishlistItems");
+
+    function renderWishlist() {
+        const list = JSON.parse(localStorage.getItem("wishlist")) || [];
+        if (wishlistCount) wishlistCount.textContent = list.length;
+        if (!wishlistItems) return;
+        wishlistItems.innerHTML = "";
+        if (!list.length) {
+            wishlistItems.innerHTML = `<li class="text-center py-3" style="font-size:13px;opacity:0.4;">No items yet</li>`;
+            return;
+        }
+        list.forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center px-2 py-2 mb-1"
+                     style="border-radius:8px; transition: background 0.15s;">
+                    <span style="font-size:13px;">${item.title}</span>
+                    <button class="btn btn-sm btn-outline-secondary px-2 py-0"
+                            style="font-size:11px;"
+                            onclick="removeFromWishlist('${item.id}')">✕</button>
+                </div>`;
+            wishlistItems.appendChild(li);
+        });
+    }
+
+    window.addToWishlist = function(id, title) {
+        let list = JSON.parse(localStorage.getItem("wishlist")) || [];
+        if (!list.find(i => i.id === id)) {
+            list.push({ id, title });
+            localStorage.setItem("wishlist", JSON.stringify(list));
+            renderWishlist();
+        }
+    };
+
+    window.removeFromWishlist = function(id) {
+        let list = JSON.parse(localStorage.getItem("wishlist")) || [];
+        list = list.filter(i => i.id !== id);
+        localStorage.setItem("wishlist", JSON.stringify(list));
+        renderWishlist();
+    };
+
+    renderWishlist();
+
+
+    /* ── Trailing glow blob — universal color sampling ── */
+    const blob = document.getElementById('cursorBlob');
+
+    let mouseX = 0, mouseY = 0;
+    let blobX  = 0, blobY  = 0;
+    let cur = { r: 91, g: 141, b: 238 };
+    let tgt = { r: 91, g: 141, b: 238 };
+
+    function parseRGB(str) {
+        if (!str) return null;
+        const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (!m) return null;
+        return { r: +m[1], g: +m[2], b: +m[3] };
+    }
+
+    function isColorless(c) {
+        if (!c) return true;
+        if (c.r < 15 && c.g < 15 && c.b < 15) return true;   // pure black
+        if (c.r > 240 && c.g > 240 && c.b > 240) return true; // pure white
+        // Only skip if completely unsaturated grey
+        const max = Math.max(c.r, c.g, c.b);
+        const min = Math.min(c.r, c.g, c.b);
+        if (max - min < 15 && max < 200) return true;
+        return false;
+    }
+
+    function getBestColor(el) {
+        let node = el;
+        // Walk up to 8 levels
+        for (let i = 0; i < 8 && node && node !== document.body; i++) {
+            const cs = window.getComputedStyle(node);
+
+            // 1. background-color
+            const bg = parseRGB(cs.backgroundColor);
+            if (bg && !isColorless(bg)) return bg;
+
+            // 2. color (text / icon color)
+            const fc = parseRGB(cs.color);
+            if (fc && !isColorless(fc)) return fc;
+
+            // 3. border-color
+            const bc = parseRGB(cs.borderColor);
+            if (bc && !isColorless(bc)) return bc;
+
+            // 4. box-shadow — grab first color from it
+            const bs = cs.boxShadow;
+            if (bs && bs !== 'none') {
+                const sc = parseRGB(bs);
+                if (sc && !isColorless(sc)) return sc;
+            }
+
+            node = node.parentElement;
+        }
+        return { r: 91, g: 141, b: 238 }; // default indigo
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (el) tgt = getBestColor(el);
+    });
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function animate() {
+        blobX  = lerp(blobX,  mouseX, 0.07);
+        blobY  = lerp(blobY,  mouseY, 0.07);
+        cur.r  = lerp(cur.r,  tgt.r,  0.05);
+        cur.g  = lerp(cur.g,  tgt.g,  0.05);
+        cur.b  = lerp(cur.b,  tgt.b,  0.05);
+
+        const r = Math.round(cur.r);
+        const g = Math.round(cur.g);
+        const b = Math.round(cur.b);
+
+        if (blob) {
+            blob.style.left       = blobX + 'px';
+            blob.style.top        = blobY + 'px';
+            blob.style.background = `radial-gradient(circle,
+                rgba(${r},${g},${b},0.28) 0%,
+                rgba(${r},${g},${b},0.12) 40%,
+                transparent 70%)`;
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    document.addEventListener('mouseleave', () => { if (blob) blob.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { if (blob) blob.style.opacity = '1'; });
+
+
+});
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

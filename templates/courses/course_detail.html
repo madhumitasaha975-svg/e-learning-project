@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+
+<div class="course-detail-wrapper">
+
+    <!-- COURSE INFO CARD -->
+    <div class="card course-detail-card p-5">
+
+        <h2 class="fw-bold detail-title">{{ course.title }}</h2>
+
+        <div class="detail-meta mt-3">
+            <p><strong>Instructor:</strong> {{ course.instructor.username }}</p>
+            <p><strong>Price:</strong>
+                {% if course.price == 0 %}
+                    <span class="badge bg-success">Free</span>
+                {% else %}
+                    ₹{{ course.price }}
+                {% endif %}
+            </p>
+            <p><strong>Lessons:</strong> {{ lessons.count }}</p>
+
+            <!-- Star Rating Display -->
+            <p>
+                <strong>Rating:</strong>
+                {% for i in star_range %}
+                    {% if i <= course.rating %}
+                        <span style="color: #f59e0b;">★</span>
+                    {% else %}
+                        <span style="color: #e5e7eb;">★</span>
+                    {% endif %}
+                {% endfor %}
+                <span class="text-muted small">
+                    {{ course.rating }}/5 ({{ course.rating_count }} review{{ course.rating_count|pluralize }})
+                </span>
+            </p>
+        </div>
+
+        <hr class="soft-divider">
+
+        <p class="mt-4 detail-description">{{ course.description }}</p>
+
+        <!-- ENROLL BUTTON -->
+        <div class="mt-4">
+            {% if user.is_authenticated %}
+                {% if user != course.instructor %}
+                    {% if is_enrolled and course_progress == 100 %}
+<div class="mb-3">
+  <a href="{% url 'course_certificate' course.pk %}" class="btn w-100 fw-bold"
+     style="background:linear-gradient(135deg,#d4af37,#ffd700);color:#000;border:none;border-radius:100px;padding:12px;">
+    🎓 Download Certificate
+  </a>
+</div>
+{% endif %}
+{% if is_enrolled %}
+                        <button class="btn btn-success" disabled>✅ Already Enrolled</button>
+                    {% else %}
+                        <a href="{% url 'enroll_course' course.pk %}" class="btn btn-primary">
+                            Enroll Now
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Login to Enroll</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- LESSONS LIST -->
+    <div class="card course-detail-card p-5 mt-4">
+        <h4 class="fw-bold mb-4">📚 Course Lessons</h4>
+
+        {% if lessons %}
+            <ul class="list-group list-group-flush">
+                {% for lesson in lessons %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><strong>{{ lesson.order }}.</strong> {{ lesson.title }}</span>
+                    {% if is_enrolled %}
+                        <a href="{% url 'lesson_detail' course.pk lesson.pk %}"
+                           class="btn btn-sm btn-outline-primary">Start →</a>
+                    {% else %}
+                        <span class="text-muted small">🔒 Enroll to unlock</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No lessons added yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- RATE THIS COURSE (enrolled students only) -->
+    {% if is_enrolled %}
+    <div class="card course-detail-card p-5 mt-4">
+        <h4 class="fw-bold mb-4">⭐ Rate This Course</h4>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'rate_course' course.pk %}">
+            {% csrf_token %}
+
+            <!-- Star selector -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Your Rating</label>
+                <div class="d-flex gap-2 star-selector">
+                    {% for i in star_range %}
+                    <label class="star-label" style="cursor:pointer; font-size: 2rem;">
+                        <input type="radio" name="stars" value="{{ i }}"
+                               style="display:none;"
+                               {% if user_rating and user_rating.stars == i %}checked{% endif %}>
+                        <span class="star-icon"
+                              style="color: {% if user_rating and i <= user_rating.stars %}#f59e0b{% else %}#e5e7eb{% endif %};">
+                            ★
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Review text -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Review <span class="text-muted fw-normal">(optional)</span></label>
+                <textarea name="review" class="form-control" rows="3"
+                          placeholder="Share your experience with this course...">{% if user_rating %}{{ user_rating.review }}{% endif %}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                {% if user_rating %}Update Rating{% else %}Submit Rating{% endif %}
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- ALL REVIEWS -->
+    {% if all_ratings %}
+    <div class="card course-detail-card p-5 mt-4">
+        <h4 class="fw-bold mb-4">💬 Student Reviews</h4>
+
+        {% for rating in all_ratings %}
+        <div class="mb-4 pb-4 {% if not forloop.last %}border-bottom{% endif %}">
+
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-bold">{{ rating.student.username }}</span>
+                <small class="text-muted">{{ rating.created_at|date:"M d, Y" }}</small>
+            </div>
+
+            <!-- Stars for this review -->
+            <div class="mb-2">
+                {% for i in star_range %}
+                    {% if i <= rating.stars %}
+                        <span style="color: #f59e0b;">★</span>
+                    {% else %}
+                        <span style="color: #e5e7eb;">★</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if rating.review %}
+                <p class="text-muted mb-0" style="font-size: 14.5px;">{{ rating.review }}</p>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'course_list' %}" class="back-link">← Back to Courses</a>
+    </div>
+
+</div>
+
+<!-- Star hover effect -->
+<script>
+document.querySelectorAll('.star-selector').forEach(selector => {
+    const labels = selector.querySelectorAll('.star-label');
+
+    labels.forEach((label, index) => {
+        label.addEventListener('mouseenter', () => {
+            labels.forEach((l, i) => {
+                l.querySelector('.star-icon').style.color = i <= index ? '#f59e0b' : '#e5e7eb';
+            });
+        });
+
+        label.addEventListener('click', () => {
+            labels.forEach((l, i) => {
+                l.querySelector('.star-icon').style.color = i <= index ? '#f59e0b' : '#e5e7eb';
+            });
+        });
+    });
+
+    selector.addEventListener('mouseleave', () => {
+        const checked = selector.querySelector('input[type=radio]:checked');
+        const checkedIndex = checked ? parseInt(checked.value) - 1 : -1;
+        labels.forEach((l, i) => {
+            l.querySelector('.star-icon').style.color = i <= checkedIndex ? '#f59e0b' : '#e5e7eb';
+        });
+    });
+});
+</script>
+
+{% endblock %}

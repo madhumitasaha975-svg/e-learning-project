@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-3 mb-4">
+      <div class="dashboard-sidebar p-4">
+        <h5 class="fw-bold mb-4">Dashboard</h5>
+        <ul class="list-unstyled">
+          <li class="mb-3"><a href="#" class="dashboard-link active">📊 Overview</a></li>
+          <li class="mb-3"><a href="#" class="dashboard-link">📚 My Courses</a></li>
+          <li class="mb-3"><a href="#" class="dashboard-link">❤️ Wishlist</a></li>
+          <li class="mb-3"><a href="#" class="dashboard-link">🔔 Notifications</a></li>
+          <a href="{% url 'profile' %}" class="dashboard-link">⚙ Settings</a>
+        </ul>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="col-lg-9">
+
+      <!-- Welcome Card -->
+      <div class="dashboard-card p-4 mb-4">
+        <h4 class="fw-bold">Welcome back, {{ user.username }} 👋</h4>
+        <p class="text-muted">Continue your learning journey today.</p>
+      </div>
+
+      <!-- STATS (real data from view) -->
+      <div class="row mb-4">
+
+        <div class="col-md-4 mb-4">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-primary">{{ enrolled_count }}</h3>
+            <p class="mb-0">Enrolled Courses</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-success">{{ average_progress }}%</h3>
+            <p class="mb-0">Average Progress</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="dashboard-card p-4 text-center">
+            <h3 class="fw-bold text-warning">{{ highest_progress }}%</h3>
+            <p class="mb-0">Highest Progress</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MY COURSES (real data) -->
+      <div class="dashboard-card p-4">
+        <h5 class="fw-bold mb-4">My Courses</h5>
+
+        {% if progress_data %}
+
+          <div class="row">
+            {% for p in progress_data %}
+            <div class="col-md-6 mb-4">
+              <div class="course-progress-card p-3">
+
+                <h6 class="fw-bold">{{ p.course.title }}</h6>
+
+                <div class="progress mt-3" style="height: 8px;">
+                  <div class="progress-bar bg-primary"
+                       role="progressbar"
+                       style="width: {{ p.progress }}%;"
+                       aria-valuenow="{{ p.progress }}"
+                       aria-valuemin="0"
+                       aria-valuemax="100">
+                  </div>
+                </div>
+
+                <small class="text-muted">{{ p.progress }}% Completed</small>
+                {% if p.progress == 100 %}
+                <div class="mt-3">
+                  <a href="{% url 'course_certificate' p.course.pk %}" class="btn w-100 fw-bold"
+                     style="background:linear-gradient(135deg,#d4af37,#ffd700);color:#000;border:none;border-radius:100px;padding:10px;">
+                    🎓 Get Certificate
+                  </a>
+                </div>
+                {% endif %}
+
+                <div class="mt-2">
+                  <a href="{% url 'course_detail' p.course.pk %}" class="btn btn-sm btn-outline-primary">
+                    Continue Learning →
+                  </a>
+                </div>
+
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+        {% else %}
+
+          <!-- Empty state — user has no courses yet -->
+          <div class="text-center py-5">
+            <p class="text-muted">You haven't enrolled in any courses yet.</p>
+            <a href="{% url 'course_list' %}" class="btn btn-primary">Browse Courses</a>
+          </div>
+
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Create Course — Sapiora{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="dashboard-card p-5">
+
+      <h4 class="fw-bold mb-1">Create New Course</h4>
+      <p style="color:var(--text2);" class="mb-4">Fill in the details to publish your course.</p>
+
+      {% if form.errors %}
+        <div class="alert alert-danger mb-4">Please fix the errors below.</div>
+      {% endif %}
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Course Title</label>
+          {{ form.title }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Description</label>
+          {{ form.description }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Price (₹) — enter 0 for free</label>
+          {{ form.price }}
+        </div>
+
+        <!-- Thumbnail upload -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Course Thumbnail</label>
+          <div class="thumbnail-upload-area" id="uploadArea">
+            <input type="file" name="thumbnail" id="thumbnailInput" accept="image/*" style="display:none;">
+            <div class="thumbnail-placeholder" id="uploadPlaceholder" onclick="document.getElementById('thumbnailInput').click()">
+              <div style="font-size:40px; margin-bottom:12px;">🖼️</div>
+              <div style="color:var(--text2); font-size:14px;">Click to upload thumbnail</div>
+              <div style="color:var(--text3); font-size:12px; margin-top:4px;">PNG, JPG, WEBP — recommended 1280×720</div>
+            </div>
+            <div class="thumbnail-preview" id="previewContainer" style="display:none;">
+              <img id="previewImg" src="" alt="Preview" style="width:100%; height:200px; object-fit:cover; border-radius:12px;">
+              <button type="button" onclick="clearThumbnail()" style="
+                position:absolute; top:8px; right:8px;
+                background:rgba(0,0,0,0.6); border:none; color:white;
+                border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:14px;
+              ">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary">Create Course →</button>
+          <a href="{% url 'instructor_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.thumbnail-upload-area {
+  position: relative;
+  border: 2px dashed rgba(91,141,238,0.3);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+.thumbnail-upload-area:hover { border-color: rgba(91,141,238,0.7); }
+.thumbnail-placeholder {
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+.thumbnail-preview { position: relative; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const input = document.getElementById('thumbnailInput');
+const preview = document.getElementById('previewImg');
+const placeholder = document.getElementById('uploadPlaceholder');
+const previewContainer = document.getElementById('previewContainer');
+
+input.addEventListener('change', function() {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      placeholder.style.display = 'none';
+      previewContainer.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Allow clicking anywhere on upload area
+document.getElementById('uploadArea').addEventListener('click', function(e) {
+  if (e.target === this || e.target.id === 'uploadArea') {
+    input.click();
+  }
+});
+
+function clearThumbnail() {
+  input.value = '';
+  preview.src = '';
+  placeholder.style.display = 'block';
+  previewContainer.style.display = 'none';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Courses — Sapiora{% endblock %}
+
+{% block content %}
+
+<div class="courses-section">
+    <h2 class="mb-5 text-center fw-bold section-title">Available Courses</h2>
+
+    <!-- SEARCH + FILTER FORM -->
+    <form method="GET" action="{% url 'course_list' %}">
+    <div class="row justify-content-center mb-4 align-items-center">
+        <div class="col-md-5 mb-2">
+            <input type="text" name="q" id="courseSearch"
+                class="form-control rounded-pill px-4 py-2 shadow-sm"
+                placeholder="Search courses by title, description or instructor..."
+                value="{{ query }}">
+        </div>
+        <div class="col-md-3 mb-2">
+            <select name="price" id="priceFilter" class="form-select rounded-pill px-3 py-2 shadow-sm">
+                <option value="">All Prices</option>
+                <option value="free" {% if price_filter == 'free' %}selected{% endif %}>Free</option>
+                <option value="paid" {% if price_filter == 'paid' %}selected{% endif %}>Paid</option>
+            </select>
+        </div>
+        <div class="col-md-2 mb-2">
+            <select id="courseSort" class="form-select rounded-pill px-3 py-2 shadow-sm">
+                <option value="">Sort By</option>
+                <option value="priceLow">Price: Low → High</option>
+                <option value="priceHigh">Price: High → Low</option>
+                <option value="titleAZ">Title: A → Z</option>
+            </select>
+        </div>
+        <div class="col-md-1 mb-2">
+            <button type="submit" class="btn btn-primary rounded-pill w-100">Go</button>
+        </div>
+    </div>
+    </form>
+
+    {% if query or price_filter %}
+    <div class="text-center mb-3">
+        <span class="text-muted">
+            {% if total_results %}
+                {{ total_results }} result{{ total_results|pluralize }} found
+                {% if query %}for "<strong>{{ query }}</strong>"{% endif %}
+            {% else %}
+                No results found
+                {% if query %}for "<strong>{{ query }}</strong>"{% endif %}
+            {% endif %}
+        </span>
+        &nbsp;·&nbsp;
+        <a href="{% url 'course_list' %}" class="text-decoration-none small">Clear filters</a>
+    </div>
+    {% endif %}
+
+    <!-- COURSE CARDS -->
+    <div class="row" id="courseContainer">
+        {% for course in courses %}
+        <div class="col-md-4 mb-4 course-col">
+            <div class="card course-card h-100 shadow-sm border-0 position-relative"
+                 data-title="{{ course.title|lower }}"
+                 data-price="{{ course.price }}">
+
+                <!-- Thumbnail -->
+                {% if course.thumbnail %}
+                <div style="height:180px; overflow:hidden; border-radius:14px 14px 0 0;">
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}"
+                         class="course-thumb-img"
+                         style="width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease;">
+                </div>
+                {% else %}
+                <div style="height:140px; border-radius:14px 14px 0 0; display:flex; align-items:center; justify-content:center; font-size:42px;
+                            background:linear-gradient(135deg, rgba(91,141,238,0.15), rgba(139,92,246,0.1));">
+                    📚
+                </div>
+                {% endif %}
+
+                <!-- Card Body -->
+                <div class="p-4">
+
+                    <!-- Price Badge -->
+                    <span class="badge bg-success px-3 py-2 mb-2 d-inline-block">
+                        {% if course.price == 0 %}Free{% else %}₹{{ course.price }}{% endif %}
+                    </span>
+
+                    <!-- Wishlist -->
+                    <button class="btn btn-sm btn-light rounded-circle shadow-sm float-end"
+                        onclick="addToWishlist('{{ course.id }}', '{{ course.title|escapejs }}')">
+                        ❤️
+                    </button>
+
+                    <h5 class="fw-bold mt-2">
+                        <a href="{% url 'course_detail' course.pk %}" class="text-decoration-none">
+                            {{ course.title }}
+                        </a>
+                    </h5>
+
+                    <p class="text-muted small mt-2">
+                        {{ course.description|truncatewords:18 }}
+                    </p>
+
+                    <!-- Rating -->
+                    <div class="mb-3">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= course.rating %}
+                                <span style="color:gold;">★</span>
+                            {% else %}
+                                <span style="color:lightgray;">★</span>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="small text-muted">({{ course.rating }}/5)</span>
+                    </div>
+
+                    <p class="mb-3 small">
+                        <strong>Instructor:</strong> {{ course.instructor.username }}
+                    </p>
+
+                    <a href="{% url 'course_detail' course.pk %}" class="btn btn-primary w-100">
+                        View Course
+                    </a>
+
+                </div><!-- /card body -->
+            </div><!-- /course-card -->
+        </div><!-- /col -->
+        {% empty %}
+        <div class="text-center py-5 w-100">
+            <p class="text-muted">No courses found.</p>
+            <a href="{% url 'course_list' %}" class="btn btn-outline-primary mt-2">View All Courses</a>
+        </div>
+        {% endfor %}
+    </div><!-- /row -->
+</div><!-- /courses-section -->
+
+<script>
+document.getElementById('courseSort').addEventListener('change', function () {
+    const sortValue = this.value;
+    const container = document.getElementById('courseContainer');
+    const cards = Array.from(container.querySelectorAll('.course-col'));
+
+    cards.sort((a, b) => {
+        const aCard = a.querySelector('.course-card');
+        const bCard = b.querySelector('.course-card');
+        if (sortValue === 'priceLow')  return parseFloat(aCard.dataset.price) - parseFloat(bCard.dataset.price);
+        if (sortValue === 'priceHigh') return parseFloat(bCard.dataset.price) - parseFloat(aCard.dataset.price);
+        if (sortValue === 'titleAZ')   return aCard.dataset.title.localeCompare(bCard.dataset.title);
+        return 0;
+    });
+    cards.forEach(card => container.appendChild(card));
+});
+
+document.getElementById('priceFilter').addEventListener('change', function () {
+    this.closest('form').submit();
+});
+</script>
+
+{% endblock %}
